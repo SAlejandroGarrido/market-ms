@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /v1/api/market
+
+api:
+  version: v1
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    feign: DEBUG
+    br.com.market: DEBUG
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
