@@ -1,22 +1,38 @@
 server:
-  port: 8080
+  port: 8089
   servlet:
     context-path: /v1/api/market
 
 api:
   version: v1
 
+spring:
+  cloud:
+    config:
+      enabled: false
+
 logging:
   level:
     root: INFO
     org.springframework.web: DEBUG
-    feign: DEBUG
+    feign:
+      Request: DEBUG
+      Response: DEBUG
     br.com.market: DEBUG
+    br.com.market.adapter.out.web.feing: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
 
 feign:
   client:
+    httpclient:
+      enabled: true
     config:
       default:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
+
+clients:
+  paths:
+    products: http://run.mocky.io/v3/f4c5e48f-771a-4cd6-bc6a-b1641ebe9c91
+    purchases: http://run.mocky.io/v3/1ecc78a0-9495-4e07-b4f4-14a6ae576858
