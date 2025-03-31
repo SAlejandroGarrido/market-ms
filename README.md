@@ -1,7 +1,7 @@
 # Market Microservice
 
 ## Objective
-This microservice provides endpoints to manage and query purchases, including customer information, products, and personalized recommendations.
+This microservice provides endpoints to manage and query customerPurchases, including customer information, products, and personalized recommendations.
 
 ## Description
 This is a demo project to analyze the skills of a senior developer. The microservice is built using Java 17 and Spring Boot 3.4.4.
