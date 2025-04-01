@@ -29,9 +29,7 @@ class PurchasesControllerTest {
         List<PurchaseDTO> expectedPurchases = List.of(new PurchaseDTO(), new PurchaseDTO());
         when(purchasesUseCase.getPurchasesOrderedByValue()).thenReturn(expectedPurchases);
 
-        mockMvc.perform(get("/purchases")
-                        .param("page", "1")
-                        .param("size", "10"))
+        mockMvc.perform(get("/purchases"))
                 .andExpect(status().isOk()) // Verifica se o status HTTP é 200
                 .andExpect(jsonPath("$.length()").value(expectedPurchases.size())); // Verifica o tamanho da lista retornada
     }
