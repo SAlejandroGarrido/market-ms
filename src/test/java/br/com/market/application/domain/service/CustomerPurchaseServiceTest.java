@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -88,15 +87,15 @@ class PurchaseServiceTest {
         when(modelMapper.map(purchase1, PurchaseDTO.class)).thenReturn(purchaseDTO1);
         when(modelMapper.map(purchase2, PurchaseDTO.class)).thenReturn(purchaseDTO2);
 
-        Page<PurchaseDTO> result = purchaseService.getPurchasesOrderedByValue(0, 3);
+        var result = purchaseService.getPurchasesOrderedByValue();
 
         verify(purchasesAdapter, only()).getOrderedByValue();
         verify(modelMapper, times(1)).map(purchase1, PurchaseDTO.class);
         verify(modelMapper, times(1)).map(purchase2, PurchaseDTO.class);
-        assertEquals(2, result.getTotalElements());
+        assertEquals(2, result.size());
         // Verificar que as compras estão em ordem crescente com base no valor
-        assertTrue(result.getContent().get(0).getPurchasesItems().get(0).getTotalValue()
-                        .compareTo(result.getContent().get(1).getPurchasesItems()
+        assertTrue(result.get(0).getPurchasesItems().get(0).getTotalValue()
+                        .compareTo(result.get(1).getPurchasesItems()
                                 .get(0).getTotalValue()) <= 0,
                 "As compras não estão em ordem crescente pelo valor total.");
     }
@@ -105,10 +104,10 @@ class PurchaseServiceTest {
     void shouldReturnEmptyPageWhenNoPurchases() {
         when(purchasesAdapter.getOrderedByValue()).thenReturn(Collections.emptyList());
 
-        Page<PurchaseDTO> result = purchaseService.getPurchasesOrderedByValue(0, 3);
+        var result = purchaseService.getPurchasesOrderedByValue();
 
-        assertEquals(0, result.getTotalElements());
-        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.size());
+        assertTrue(result.isEmpty());
     }
 
 }
