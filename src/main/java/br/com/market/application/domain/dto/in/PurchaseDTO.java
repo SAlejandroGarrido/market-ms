@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,4 +15,12 @@ import java.util.List;
 public class PurchaseDTO {
     private CustomerDTO customer;
     private List<PurchasesItemDTO> purchasesItems;
+    private BigDecimal totalValuePurchases;
+
+    public void setTotalValuePurchases() {
+        var totalValuePurchases = this.purchasesItems.stream()
+                .map(PurchasesItemDTO::getTotalValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.setTotalValuePurchases(totalValuePurchases);
+    }
 }

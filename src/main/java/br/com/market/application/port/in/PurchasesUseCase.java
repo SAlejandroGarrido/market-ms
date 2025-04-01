@@ -8,4 +8,6 @@ public interface PurchasesUseCase {
 
     List<PurchaseDTO> getPurchasesOrderedByValue();
 
+    PurchaseDTO getLargestPurchaseOfTheYear(int year);
+
 }

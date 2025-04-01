@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
@@ -109,5 +110,67 @@ class PurchaseServiceTest {
         assertEquals(0, result.size());
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void shouldReturnLargestPurchaseOfTheYear() {
+        int year = 2025;
+        LocalDate purchaseDate = LocalDate.of(year, 3, 31);
+
+        var customer = Customer.builder().cpf("12345678900").name("Cliente Teste").build();
+        var product1 = Product.builder().id(1L).quantity(2).build();
+        var product2 = Product.builder().id(2L).quantity(3).build();
+
+        var purchase1 = CustomerPurchase.builder()
+                .customer(customer)
+                .purchasesItems(List.of(PurchasesItem.builder()
+                        .date(purchaseDate)
+                        .totalValue(new BigDecimal("100.00"))
+                        .productList(List.of(product1))
+                        .build()))
+                .build();
+
+        var purchase2 = CustomerPurchase.builder()
+                .customer(customer)
+                .purchasesItems(List.of(PurchasesItem.builder()
+                        .date(purchaseDate)
+                        .totalValue(new BigDecimal("200.00"))
+                        .productList(List.of(product2))
+                        .build()))
+                .build();
+
+        List<CustomerPurchase> purchases = List.of(purchase1, purchase2);
+
+        var purchaseDTO = PurchaseDTO.builder()
+                .customer(CustomerDTO.builder().cpf("12345678900").name("Cliente Teste").build())
+                .purchasesItems(List.of(PurchasesItemDTO.builder()
+                        .date(purchaseDate)
+                        .totalValue(new BigDecimal("200.00"))
+                        .productList(List.of(ProductDTO.builder().id(2L).quantity(3).build()))
+                        .build()))
+                .build();
+
+        when(purchasesAdapter.getPurchases()).thenReturn(purchases);
+        when(modelMapper.map(purchase2, PurchaseDTO.class)).thenReturn(purchaseDTO);
+
+        var result = purchaseService.getLargestPurchaseOfTheYear(year);
+
+        verify(purchasesAdapter, only()).getPurchases();
+        verify(modelMapper, times(1)).map(purchase2, PurchaseDTO.class);
+
+        assertEquals(new BigDecimal("200.00"), result.getPurchasesItems().get(0).getTotalValue());
+        assertEquals("12345678900", result.getCustomer().getCpf());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenNoPurchasesFoundForYear() {
+        int year = 2025;
+        when(purchasesAdapter.getPurchases()).thenReturn(Collections.emptyList());
+
+        var exception = assertThrows(RuntimeException.class, () -> purchaseService.getLargestPurchaseOfTheYear(year));
+        assertEquals("Nenhuma compra encontrada para o ano " + year, exception.getMessage());
+
+        verify(purchasesAdapter, only()).getPurchases();
+    }
+
 
 }

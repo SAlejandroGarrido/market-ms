@@ -35,4 +35,25 @@ public class PurchaseService implements PurchasesUseCase {
                 .map(purchaseItem -> modelMapper.map(purchaseItem, PurchaseDTO.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public PurchaseDTO getLargestPurchaseOfTheYear(int year) {
+        var purchases = purchasesAdapter.getPurchases();
+
+        var largePurchases = purchases.stream()
+                .filter(compra -> compra.getPurchasesItems().stream()
+                        .map(PurchasesItem::getDate)
+                        .allMatch(localDate -> localDate.getYear() == year))
+                .max(Comparator.comparing(p -> p.getPurchasesItems()
+                        .stream()
+                        .map(PurchasesItem::getTotalValue)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)))
+                .map(purchaseItem -> modelMapper.map(purchaseItem, PurchaseDTO.class))
+                .orElseThrow(() ->  new RuntimeException("Nenhuma compra encontrada para o ano " + year));
+        log.info("Maior compra do ano {}: {}", year, largePurchases);
+
+        largePurchases.setTotalValuePurchases();
+
+        return largePurchases;
+    }
 }
