@@ -18,7 +18,7 @@ public class PurchasesAdapter implements PurchasesPort {
     private final PurchasesClient purchasesClient;
 
     @Override
-    public List<CustomerPurchase> getOrderedByValue() {
+    public List<CustomerPurchase> getPurchases() {
         try {
             return purchasesClient.getPurchases().getCustomerPurchases();
         } catch (FeignException e) {

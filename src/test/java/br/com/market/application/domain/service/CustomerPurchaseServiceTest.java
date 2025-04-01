@@ -83,13 +83,13 @@ class PurchaseServiceTest {
         var purchaseDTO1 = PurchaseDTO.builder().purchasesItems(List.of(purchasesItemDTO1)).customer(customerDTO1).build();
         var purchaseDTO2 = PurchaseDTO.builder().purchasesItems(List.of(purchasesItemDTO2)).customer(customerDTO1).build();
 
-        when(purchasesAdapter.getOrderedByValue()).thenReturn(customerPurchases);
+        when(purchasesAdapter.getPurchases()).thenReturn(customerPurchases);
         when(modelMapper.map(purchase1, PurchaseDTO.class)).thenReturn(purchaseDTO1);
         when(modelMapper.map(purchase2, PurchaseDTO.class)).thenReturn(purchaseDTO2);
 
         var result = purchaseService.getPurchasesOrderedByValue();
 
-        verify(purchasesAdapter, only()).getOrderedByValue();
+        verify(purchasesAdapter, only()).getPurchases();
         verify(modelMapper, times(1)).map(purchase1, PurchaseDTO.class);
         verify(modelMapper, times(1)).map(purchase2, PurchaseDTO.class);
         assertEquals(2, result.size());
@@ -102,7 +102,7 @@ class PurchaseServiceTest {
 
     @Test
     void shouldReturnEmptyPageWhenNoPurchases() {
-        when(purchasesAdapter.getOrderedByValue()).thenReturn(Collections.emptyList());
+        when(purchasesAdapter.getPurchases()).thenReturn(Collections.emptyList());
 
         var result = purchaseService.getPurchasesOrderedByValue();
 

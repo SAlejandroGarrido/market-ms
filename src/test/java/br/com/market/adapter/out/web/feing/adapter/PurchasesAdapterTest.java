@@ -59,7 +59,7 @@ class PurchasesAdapterTest {
 
         when(purchasesClient.getPurchases()).thenReturn(new CustomerPurchasesData<>(List.of(purchase1,purchase2)));
 
-        List<CustomerPurchase> result = purchasesAdapter.getOrderedByValue();
+        List<CustomerPurchase> result = purchasesAdapter.getPurchases();
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -72,7 +72,7 @@ class PurchasesAdapterTest {
         when(purchasesClient.getPurchases()).thenThrow(FeignException.NotFound.class);
 
         // Execução e validação
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> purchasesAdapter.getOrderedByValue());
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> purchasesAdapter.getPurchases());
         assertTrue(thrown.getMessage().contains("Erro ao consumir a API"));
     }
 
@@ -82,7 +82,7 @@ class PurchasesAdapterTest {
         when(purchasesClient.getPurchases()).thenThrow(mock(FeignException.class));
 
         // Execução e validação
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> purchasesAdapter.getOrderedByValue());
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> purchasesAdapter.getPurchases());
         assertTrue(thrown.getMessage().contains("Erro ao consumir a API"));
     }
 
@@ -92,7 +92,7 @@ class PurchasesAdapterTest {
         when(purchasesClient.getPurchases()).thenThrow(new RuntimeException("Erro inesperado"));
 
         // Execução e validação
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> purchasesAdapter.getOrderedByValue());
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> purchasesAdapter.getPurchases());
         assertTrue(thrown.getMessage().contains("Erro inesperado ao buscar compras"));
     }
 }
