@@ -21,8 +21,10 @@ public class PurchasesAdapter implements PurchasesPort {
     public List<CustomerPurchase> getOrderedByValue() {
         try {
             return purchasesClient.getPurchases().getCustomerPurchases();
+        } catch (FeignException e) {
+            throw new RuntimeException("Erro ao consumir a API: " + e.status(), e);
         } catch (Exception e) {
-            throw new FeignException.NotFound("Algo deu errado",null,null,null);
+            throw new RuntimeException("Erro inesperado ao buscar compras", e);
         }
 
     }
