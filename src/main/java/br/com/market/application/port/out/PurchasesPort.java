@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PurchasesPort {
 
-   List<CustomerPurchase> getOrderedByValue();
+   List<CustomerPurchase> getPurchases();
 }

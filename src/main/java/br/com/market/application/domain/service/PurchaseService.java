@@ -25,7 +25,7 @@ public class PurchaseService implements PurchasesUseCase {
     @Override
     public List<PurchaseDTO> getPurchasesOrderedByValue() {
         log.info("Fetching purchases ordered by value");
-        var customerPurchases = purchasesAdapter.getOrderedByValue();
+        var customerPurchases = purchasesAdapter.getPurchases();
 
         return customerPurchases.stream()
                 .sorted(Comparator.comparing(p -> p.getPurchasesItems()
