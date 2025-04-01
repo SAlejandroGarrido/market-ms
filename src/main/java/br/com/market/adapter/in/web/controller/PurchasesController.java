@@ -6,6 +6,7 @@ import br.com.market.application.port.in.PurchasesUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +24,10 @@ public class PurchasesController {
     public List<PurchaseDTO> getPurchases() {
         log.info("Received request to get all purchases ordered by value");
         return purchasesUseCase.getPurchasesOrderedByValue();
+    }
+
+    @GetMapping("/{year}")
+    public PurchaseDTO getLargestPurchaseOfTheYear(@PathVariable int year) {
+        return purchasesUseCase.getLargestPurchaseOfTheYear(year);
     }
 }
