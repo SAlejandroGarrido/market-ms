@@ -16,5 +16,5 @@ import java.util.List;
 public class PurchasesItemDTO {
     private BigDecimal totalValue;
     private LocalDate date;
-    public List<ProductDTO> productList;
+    private List<ProductDTO> productList;
 }

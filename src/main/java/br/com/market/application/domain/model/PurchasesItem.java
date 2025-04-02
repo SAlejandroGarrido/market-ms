@@ -21,5 +21,5 @@ public class PurchasesItem implements Serializable {
     @JsonProperty("data")
     private LocalDate date;
     @JsonProperty("produtos")
-    public List<Product> productList;
+    public List<ProductPurchase> productPurchaseList;
 }

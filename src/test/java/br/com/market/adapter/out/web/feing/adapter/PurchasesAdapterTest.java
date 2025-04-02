@@ -4,7 +4,7 @@ import br.com.market.adapter.out.web.feing.PurchasesClient;
 import br.com.market.application.domain.model.Customer;
 import br.com.market.application.domain.model.CustomerPurchase;
 import br.com.market.application.domain.model.CustomerPurchasesData;
-import br.com.market.application.domain.model.Product;
+import br.com.market.application.domain.model.ProductPurchase;
 import br.com.market.application.domain.model.PurchasesItem;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
@@ -38,22 +38,22 @@ class PurchasesAdapterTest {
     void shouldReturnPurchasesWhenApiReturnsData() {
 
         var customer = Customer.builder().cpf("test").name("test").build();
-        var product1 = Product.builder().id(1L).quantity(2).build();
-        var product2 = Product.builder().id(2L).quantity(3).build();
+        var product1 = ProductPurchase.builder().id(1L).quantity(2).build();
+        var product2 = ProductPurchase.builder().id(2L).quantity(3).build();
         var datePurchaseLocalDate = LocalDate.parse("2025-03-31");
 
         var purchase1 = CustomerPurchase.builder().customer(customer)
                 .purchasesItems(Collections.singletonList(PurchasesItem.builder()
                         .date(datePurchaseLocalDate)
                         .totalValue(BigDecimal.TEN)
-                        .productList(Collections.singletonList(product1))
+                        .productPurchaseList(Collections.singletonList(product1))
                         .build()))
                 .build();
         var purchase2 = CustomerPurchase.builder().customer(customer)
                 .purchasesItems(Collections.singletonList(PurchasesItem.builder()
                         .date(datePurchaseLocalDate)
                         .totalValue(BigDecimal.ONE)
-                        .productList(Collections.singletonList(product2))
+                        .productPurchaseList(Collections.singletonList(product2))
                         .build()))
                 .build();
 

@@ -1,5 +1,6 @@
 package br.com.market.application.domain.dto.in;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.util.List;
 public class PurchaseDTO {
     private CustomerDTO customer;
     private List<PurchasesItemDTO> purchasesItems;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BigDecimal totalValuePurchases;
 
     public void setTotalValuePurchases() {
