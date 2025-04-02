@@ -2,7 +2,7 @@ package br.com.market.adapter.in.web.controller;
 
 
 import br.com.market.application.domain.dto.in.PurchaseDTO;
-import br.com.market.application.port.in.PurchasesUseCase;
+import br.com.market.application.port.in.CustomersAndPurchasesUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,16 +18,17 @@ import java.util.List;
 @RequestMapping("/purchases")
 public class PurchasesController {
 
-    private final PurchasesUseCase purchasesUseCase;
+    private final CustomersAndPurchasesUseCase useCase;
 
     @GetMapping
     public List<PurchaseDTO> getPurchases() {
         log.info("Received request to get all purchases ordered by value");
-        return purchasesUseCase.getPurchasesOrderedByValue();
+        return useCase.getPurchasesOrderedByValue();
     }
 
     @GetMapping("/{year}")
     public PurchaseDTO getLargestPurchaseOfTheYear(@PathVariable int year) {
-        return purchasesUseCase.getLargestPurchaseOfTheYear(year);
+        return useCase.getLargestPurchaseOfTheYear(year);
     }
+
 }

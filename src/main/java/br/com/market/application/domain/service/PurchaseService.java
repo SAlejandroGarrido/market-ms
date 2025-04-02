@@ -2,12 +2,14 @@ package br.com.market.application.domain.service;
 
 import br.com.market.adapter.out.web.feing.adapter.ProductAdapter;
 import br.com.market.adapter.out.web.feing.adapter.PurchasesAdapter;
+import br.com.market.application.domain.dto.in.CustomerDTO;
+import br.com.market.application.domain.dto.in.CustomerLoyalDTO;
 import br.com.market.application.domain.dto.in.PurchaseDTO;
 import br.com.market.application.domain.dto.in.PurchasesItemDTO;
 import br.com.market.application.domain.model.CustomerPurchase;
 import br.com.market.application.domain.model.Product;
 import br.com.market.application.domain.model.PurchasesItem;
-import br.com.market.application.port.in.PurchasesUseCase;
+import br.com.market.application.port.in.CustomersAndPurchasesUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class PurchaseService implements PurchasesUseCase {
+public class PurchaseService implements CustomersAndPurchasesUseCase {
 
     private final PurchasesAdapter purchasesAdapter;
     private final ProductAdapter productAdapter;
@@ -32,10 +35,10 @@ public class PurchaseService implements PurchasesUseCase {
     @Override
     public List<PurchaseDTO> getPurchasesOrderedByValue() {
         log.info("Fetching purchases ordered by value");
-        var purchaseDTOS = getPurchasesDTO(purchasesAdapter.getPurchases());
+        var purchaseDTOS = getPurchasesDTOOrderByTotalValue(purchasesAdapter.getPurchases());
 
         purchaseDTOS.forEach(purchases -> enrichPurchaseWithProduct(purchases,  productAdapter.getProduct()));
-        purchaseDTOS.forEach(PurchaseDTO::setTotalValuePurchases);
+        purchaseDTOS.forEach(PurchaseDTO::calculeteTotalValueAndSetValue);
 
         return purchaseDTOS;
     }
@@ -45,9 +48,45 @@ public class PurchaseService implements PurchasesUseCase {
         var largePurchases = getLargePurchases(year, purchasesAdapter.getPurchases());
 
         enrichPurchaseWithProduct(largePurchases, productAdapter.getProduct());
-        largePurchases.setTotalValuePurchases();
+        largePurchases.calculeteTotalValueAndSetValue();
 
         return largePurchases;
+    }
+
+    @Override
+    public List<CustomerLoyalDTO> getTopCustomer() {
+        log.info("Fetching top 3 clients with the most frequent and high-value purchases");
+        var purchasesList = purchasesAdapter.getPurchases();
+        var purchaseDTOList = convertToPurchaseDTO(purchasesList);
+
+        Map<String, BigDecimal> clientTotalPurchaseValue = new HashMap<>();
+        Map<String, CustomerDTO> mapCustomer= new HashMap<>();
+
+        purchaseDTOList.forEach(purchaseDTO -> {
+            purchaseDTO.calculeteTotalValueAndSetValue();
+            mapCustomer.put(purchaseDTO.getCustomer().getCpf(), purchaseDTO.getCustomer());
+            clientTotalPurchaseValue.merge(purchaseDTO.getCustomer().getCpf(), purchaseDTO.getTotalValuePurchases(), BigDecimal::add);
+        });
+
+        return clientTotalPurchaseValue.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry<String, BigDecimal>::getValue).reversed())
+                .limit(3)
+                .map(entry -> getBuildCustomerLoyal(entry, mapCustomer))
+                .collect(Collectors.toList());
+    }
+
+    private static CustomerLoyalDTO getBuildCustomerLoyal(Map.Entry<String, BigDecimal> entry, Map<String, CustomerDTO> mapCustomer) {
+        return CustomerLoyalDTO.builder()
+                .totalValuePurchase(entry.getValue())
+                .cpf(entry.getKey())
+                .name(mapCustomer.get(entry.getKey()).getName())
+                .build();
+    }
+
+    private List<PurchaseDTO> convertToPurchaseDTO(List<CustomerPurchase> purchases) {
+        return purchases.stream()
+                .map(purchaseItem -> modelMapper.map(purchaseItem, PurchaseDTO.class))
+                .toList();
     }
 
     private PurchaseDTO getLargePurchases(int year, List<CustomerPurchase> purchases) {
@@ -65,13 +104,13 @@ public class PurchaseService implements PurchasesUseCase {
 
                 .orElseThrow(() -> new RuntimeException("Nenhuma compra encontrada para o ano " + year));
 
-        largePurchases.setTotalValuePurchases();
+        largePurchases.calculeteTotalValueAndSetValue();
         log.info("Maior compra do ano {}: {}", year, largePurchases);
 
         return largePurchases;
     }
 
-    private List<PurchaseDTO> getPurchasesDTO(List<CustomerPurchase> customerPurchases) {
+    private List<PurchaseDTO> getPurchasesDTOOrderByTotalValue(List<CustomerPurchase> customerPurchases) {
         return customerPurchases.stream()
                 .sorted(Comparator.comparing(p -> p.getPurchasesItems()
                         .stream()

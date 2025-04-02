@@ -1,6 +1,7 @@
 package br.com.market.application.domain.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,10 +20,10 @@ public class PurchaseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private BigDecimal totalValuePurchases;
 
-    public void setTotalValuePurchases() {
-        var totalValuePurchases = this.purchasesItems.stream()
+    @PostConstruct
+    public void calculeteTotalValueAndSetValue() {
+        this.totalValuePurchases = this.purchasesItems.stream()
                 .map(PurchasesItemDTO::getTotalValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        this.setTotalValuePurchases(totalValuePurchases);
     }
 }

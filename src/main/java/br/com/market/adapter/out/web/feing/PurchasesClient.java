@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 
-@FeignClient(name = "purchasesClient", url = "http://run.mocky.io/v3")
+@FeignClient(name = "purchasesClient", url = "${clients.paths.purchases}")
 public interface PurchasesClient {
 
-    @GetMapping(value = "/1ecc78a0-9495-4e07-b4f4-14a6ae576858", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     CustomerPurchasesData<List<CustomerPurchase>> getPurchases();
 }

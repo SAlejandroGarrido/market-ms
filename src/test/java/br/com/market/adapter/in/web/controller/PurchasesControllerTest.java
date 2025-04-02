@@ -4,7 +4,7 @@ import br.com.market.application.domain.dto.in.CustomerDTO;
 import br.com.market.application.domain.dto.in.ProductDTO;
 import br.com.market.application.domain.dto.in.PurchaseDTO;
 import br.com.market.application.domain.dto.in.PurchasesItemDTO;
-import br.com.market.application.port.in.PurchasesUseCase;
+import br.com.market.application.port.in.CustomersAndPurchasesUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,12 +27,12 @@ class PurchasesControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PurchasesUseCase purchasesUseCase;
+    private CustomersAndPurchasesUseCase customersAndPurchasesUseCase;
 
     @Test
     void getPurchases_ShouldReturnListOfPurchases() throws Exception {
         List<PurchaseDTO> expectedPurchases = List.of(new PurchaseDTO(), new PurchaseDTO());
-        when(purchasesUseCase.getPurchasesOrderedByValue()).thenReturn(expectedPurchases);
+        when(customersAndPurchasesUseCase.getPurchasesOrderedByValue()).thenReturn(expectedPurchases);
 
         mockMvc.perform(get("/purchases"))
                 .andExpect(status().isOk())
@@ -43,7 +43,7 @@ class PurchasesControllerTest {
     void getLargestPurchaseOfTheYear_ShouldReturnCompletePurchaseDTO() throws Exception {
         int year = 2024;
         PurchaseDTO purchaseDTO = createMockPurchaseDTO();
-        when(purchasesUseCase.getLargestPurchaseOfTheYear(year)).thenReturn(purchaseDTO);
+        when(customersAndPurchasesUseCase.getLargestPurchaseOfTheYear(year)).thenReturn(purchaseDTO);
 
         mockMvc.perform(get("/purchases/{year}", year))
                 .andExpect(status().isOk())
