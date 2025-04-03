@@ -34,5 +34,5 @@ feign:
 
 clients:
   paths:
-    products: http://run.mocky.io/v3/f4c5e48f-771a-4cd6-bc6a-b1641ebe9c91
-    purchases: http://run.mocky.io/v3/1ecc78a0-9495-4e07-b4f4-14a6ae576858
+    products: https://run.mocky.io/v3/08a33394-a498-4fae-9d51-8b75fd971f19
+    purchases: https://run.mocky.io/v3/2fcefb23-83fa-4d2a-88a4-927f3ebd0dd7
