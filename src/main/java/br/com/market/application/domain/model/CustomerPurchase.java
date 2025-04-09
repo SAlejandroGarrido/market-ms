@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -15,9 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomerPurchase implements Serializable {
 
-    @JsonProperty("cliente")
-    private Customer customer;
-    @JsonProperty("compras")
-    private List<PurchasesItem> purchasesItems;
+    @JsonProperty("nome")
+    private String name;
 
+    @JsonProperty("cpf")
+    private String cpf;
+
+    @JsonProperty("compras")
+    private List<ProductPurchase> purchaseProducts;
+
+    @JsonProperty("data_compra")
+    private LocalDate purchaseDate;
 }

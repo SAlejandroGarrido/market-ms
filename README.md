@@ -1,33 +1,52 @@
-# Market Microservice
+# 🌟 Spring Market Application
 
-## Objective
-This microservice provides endpoints to manage and query customerPurchases, including customer information, products, and personalized recommendations.
+## 🛠️ Tecnologias Utilizadas
+- 🖥️ **Java**: Linguagem principal do projeto.
+- 🌱 **Spring Boot**: Framework para criação de aplicações Java.
+- 📦 **Maven**: Gerenciador de dependências e build.
+- 🌐 **Feign**: Cliente HTTP para comunicação com APIs externas.
+- ✂️ **Lombok**: Redução de boilerplate no código.
+- 📊 **Actuator**: Monitoramento e métricas da aplicação.
+- 📈 **Prometheus**: Coleta e armazenamento de métricas.
+- 📉 **Grafana**: Visualização e análise de métricas.
+- 🐳 **Docker**: Containerização da aplicação para facilitar o deploy e a escalabilidade.
+- ✅ **JaCoCo**: Ferramenta para análise de cobertura de código.
 
-## Description
-This is a demo project to analyze the skills of a senior developer. The microservice is built using Java 17 and Spring Boot 3.4.4.
+## 🏗️ Arquitetura
+A aplicação segue os princípios da **Arquitetura Hexagonal** (🔌 **Ports and Adapters**). 
 
-## Technologies Used
+### 🗂️ Estrutura do Projeto
+- 📁 **Application**: Contém as regras de negócio e entidades principais e casos de uso e interfaces que conectam o domínio com o mundo externo.
+- 📁 **Adapter**: Implementações concretas para comunicação com APIs externas, banco de dados ou interfaces web.
 
-### Language
-- **Java 17**
+## 🔍 Observabilidade
+A aplicação está configurada para monitoramento e visualização de métricas utilizando as seguintes ferramentas:
+- 🛠️ **Spring Boot Actuator**: Exposição de métricas e informações de saúde da aplicação em `/actuator`.
+- 📊 **Prometheus**: Coleta e armazenamento de métricas no formato configurado pelo Actuator.
+- 📉 **Grafana**: Visualização das métricas coletadas pelo Prometheus em dashboards customizáveis.
+- 🐳 **Docker**: Facilita a execução de Prometheus e Grafana em containers.
 
-### Frameworks and Libraries
-- **Spring Boot 3.4.4**
-    - `spring-boot-starter-web` - For developing web applications and REST APIs.
-    - `spring-boot-starter-actuator` - For application monitoring and management.
-    - `spring-boot-starter-logging` - For log management.
-    - `spring-boot-starter-test` - For unit and integration testing support.
-- **Spring Cloud 2024.0.1**
-    - `spring-cloud-starter-openfeign` - For microservices communication via Feign Client.
-- **ModelMapper 3.1.1** - For object conversion.
-- **Lombok** - To reduce code verbosity by automatically generating getters, setters, and constructors.
+### ⚙️ Configuração de Observabilidade
+1. **Prometheus**:
+   - Configurado para coletar métricas da aplicação no endpoint `/actuator/prometheus`.
 
-### Testing
-- **JUnit 5** - For running unit tests.
-- **Mockito 5.10.0** - For mocking dependencies in tests.
-- **mockito-junit-jupiter 5.10.0** - Integration of Mockito with JUnit 5.
+2. **Grafana**:
+   - Conectado ao Prometheus como fonte de dados.
+   - Dashboards podem ser criados para monitorar métricas como tempo de resposta, uso de memória e número de requisições.
 
-### Build and Dependency Management
-- **Maven** - Dependency manager and build automation tool.
-- **maven-compiler-plugin** - For project compilation.
-- **spring-boot-maven-plugin** - For packaging and running the Spring Boot application.
+3. **Docker**:
+   - Um `docker-compose.yml` pode ser usado para subir a aplicação, Prometheus e Grafana:
+
+## 📊 Cobertura de Código
+A aplicação utiliza o **JaCoCo** para análise de cobertura de código. A configuração atual exige uma cobertura mínima de 90% para as classes principais, com exceções configuradas para:
+- **Modelos** (`model`)
+- **DTOs** (`dto`)
+- **Exceções** (`exception`)
+- **Configurações** (`config`)
+- **Classe principal da aplicação**
+- **Utilitários** (`util`)
+
+### Como Gerar o Relatório de Cobertura
+1. Execute os testes com o comando:
+   ```bash
+   mvn clean verify

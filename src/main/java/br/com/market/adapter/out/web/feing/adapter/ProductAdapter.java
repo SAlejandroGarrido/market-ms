@@ -1,6 +1,7 @@
 package br.com.market.adapter.out.web.feing.adapter;
 
 import br.com.market.adapter.out.web.feing.ProductsClient;
+import br.com.market.adapter.out.web.feing.exception.ProductAdapterException;
 import br.com.market.application.domain.model.Product;
 import br.com.market.application.port.out.ProductPort;
 import feign.FeignException;
@@ -17,14 +18,18 @@ public class ProductAdapter implements ProductPort {
 
     private final ProductsClient productsClient;
 
-    @Override
-    public List<Product> getProduct() {
+    public List<Product> getProducts() {
+        log.info("Iniciando a busca de produtos via ProductsClient.");
         try {
-            return productsClient.getProducts().getProducts();
+            List<Product> products = productsClient.getProducts();
+            log.info("Busca de produtos concluída com sucesso. Total de produtos encontrados: {}", products.size());
+            return products;
         } catch (FeignException e) {
-            throw new RuntimeException("Erro ao consumir a API: " + e.status(), e);
+            log.error("Erro ao consumir a API de produtos: {}", e.getMessage(), e);
+            throw new ProductAdapterException("Erro ao consumir a API:", e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException("Erro inesperado ao buscar produtos", e);
+            log.error("Erro inesperado ao buscar produtos: {}", e.getMessage(), e);
+            throw new ProductAdapterException("Erro inesperado ao buscar produtos", e.getMessage());
         }
 
     }

@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductPurchase implements Serializable {
-    @JsonProperty("id")
+    @JsonProperty("codigo")
     private Long id;
     @JsonProperty("quantidade")
     private int quantity;
