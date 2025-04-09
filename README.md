@@ -13,7 +13,7 @@
 - ✅ **JaCoCo**: Ferramenta para análise de cobertura de código.
 
 ## 🏗️ Arquitetura
-A aplicação segue os princípios da **Arquitetura Hexagonal** (🔌 **Ports and Adapters**). 
+A aplicação segue os princípios da **Arquitetura Hexagonal** (🔌 **Ports and Adapters**).
 
 ### 🗂️ Estrutura do Projeto
 - 📁 **Application**: Contém as regras de negócio e entidades principais e casos de uso e interfaces que conectam o domínio com o mundo externo.
@@ -21,7 +21,7 @@ A aplicação segue os princípios da **Arquitetura Hexagonal** (🔌 **Ports an
 
 ## 🔍 Observabilidade
 A aplicação está configurada para monitoramento e visualização de métricas utilizando as seguintes ferramentas:
-- 🛠️ **Spring Boot Actuator**: Exposição de métricas e informações de saúde da aplicação em `/actuator`.
+- 🛠️ **Spring Boot Actuator**: Exposição de métricas e informações de sa��de da aplicação em `/actuator`.
 - 📊 **Prometheus**: Coleta e armazenamento de métricas no formato configurado pelo Actuator.
 - 📉 **Grafana**: Visualização das métricas coletadas pelo Prometheus em dashboards customizáveis.
 - 🐳 **Docker**: Facilita a execução de Prometheus e Grafana em containers.
@@ -45,6 +45,10 @@ A aplicação utiliza o **JaCoCo** para análise de cobertura de código. A conf
 - **Configurações** (`config`)
 - **Classe principal da aplicação**
 - **Utilitários** (`util`)
+
+## 🔮 Próximas Features
+- 🛡️ **SonarQube**: Integração para análise de qualidade de código e detecção de vulnerabilidades.
+- ☸️ **Kubernetes**: Arquivos de configuração para deploy da aplicação em clusters Kubernetes, garantindo escalabilidade e alta disponibilidade.
 
 ### Como Gerar o Relatório de Cobertura
 1. Execute os testes com o comando:
