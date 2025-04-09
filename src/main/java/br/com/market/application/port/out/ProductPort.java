@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ProductPort {
 
-   List<Product> getProduct();
+   List<Product> getProducts();
 }

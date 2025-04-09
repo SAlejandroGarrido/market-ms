@@ -1,9 +1,8 @@
 package br.com.market.adapter.in.web.controller;
 
 import br.com.market.application.domain.dto.in.CustomerDTO;
-import br.com.market.application.domain.dto.in.ProductDTO;
 import br.com.market.application.domain.dto.in.PurchaseDTO;
-import br.com.market.application.domain.dto.in.PurchasesItemDTO;
+import br.com.market.application.domain.dto.in.PurchasesProductDTO;
 import br.com.market.application.port.in.CustomersAndPurchasesUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -31,10 +29,14 @@ class PurchasesControllerTest {
 
     @Test
     void getPurchases_ShouldReturnListOfPurchases() throws Exception {
-        List<PurchaseDTO> expectedPurchases = List.of(new PurchaseDTO(), new PurchaseDTO());
+        List<PurchaseDTO> expectedPurchases = List.of(
+                createPurchaseDTO("Carlos Souza", "321.654.987-00", 2L, 3, 270),
+                createPurchaseDTO("Ana Silva", "123.456.789-00", 5L, 5, 750)
+        );
+
         when(customersAndPurchasesUseCase.getPurchasesOrderedByValue()).thenReturn(expectedPurchases);
 
-        mockMvc.perform(get("/purchases"))
+        mockMvc.perform(get("/v1/api/market/purchases"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(expectedPurchases.size()));
     }
@@ -42,35 +44,55 @@ class PurchasesControllerTest {
     @Test
     void getLargestPurchaseOfTheYear_ShouldReturnCompletePurchaseDTO() throws Exception {
         int year = 2024;
-        PurchaseDTO purchaseDTO = createMockPurchaseDTO();
+
+        PurchaseDTO purchaseDTO = createPurchaseDTO(
+                List.of(
+                        createPurchasesProductDTO(2L, 3, 270),
+                        createPurchasesProductDTO(5L, 5, 750)
+                ),
+                BigDecimal.valueOf(1020)
+        );
+
         when(customersAndPurchasesUseCase.getLargestPurchaseOfTheYear(year)).thenReturn(purchaseDTO);
 
-        mockMvc.perform(get("/purchases/{year}", year))
+        mockMvc.perform(get("/v1/api/market/purchases/{year}", year))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customer.name").value("Carlos Souza"))
                 .andExpect(jsonPath("$.customer.cpf").value("321.654.987-00"))
-                .andExpect(jsonPath("$.purchasesItems.length()").value(2))
-                .andExpect(jsonPath("$.purchasesItems[0].totalValue").value(270))
-                .andExpect(jsonPath("$.purchasesItems[0].date").value("2024-03-15"))
-                .andExpect(jsonPath("$.purchasesItems[0].productList[0].id").value(2))
-                .andExpect(jsonPath("$.purchasesItems[0].productList[0].quantity").value(3))
-                .andExpect(jsonPath("$.purchasesItems[1].totalValue").value(750))
-                .andExpect(jsonPath("$.purchasesItems[1].date").value("2024-01-05"))
-                .andExpect(jsonPath("$.purchasesItems[1].productList[0].id").value(5))
-                .andExpect(jsonPath("$.purchasesItems[1].productList[0].quantity").value(5))
-                .andExpect(jsonPath("$.totalValuePurchases").value(1020));
+                .andExpect(jsonPath("$.purchasesProducts.length()").value(2))
+                .andExpect(jsonPath("$.purchasesProducts[0].totalValue").value(270))
+                .andExpect(jsonPath("$.purchasesProducts[0].id").value(2))
+                .andExpect(jsonPath("$.purchasesProducts[0].quantity").value(3))
+                .andExpect(jsonPath("$.purchasesProducts[1].totalValue").value(750))
+                .andExpect(jsonPath("$.purchasesProducts[1].id").value(5))
+                .andExpect(jsonPath("$.purchasesProducts[1].quantity").value(5))
+                .andExpect(jsonPath("$.purchasesTotalValue").value(1020));
     }
 
-    private PurchaseDTO createMockPurchaseDTO() {
+    private PurchaseDTO createPurchaseDTO(String customerName, String customerCpf, Long productId, int quantity, double totalValue) {
+        CustomerDTO customer = new CustomerDTO(customerName, customerCpf);
+        PurchasesProductDTO product = createPurchasesProductDTO(productId, quantity, totalValue);
+        return PurchaseDTO.builder()
+                .customer(customer)
+                .purchasesProducts(List.of(product))
+                .purchasesTotalValue(BigDecimal.valueOf(totalValue))
+                .build();
+    }
+
+    private PurchaseDTO createPurchaseDTO(List<PurchasesProductDTO> products, BigDecimal totalValue) {
         CustomerDTO customer = new CustomerDTO("Carlos Souza", "321.654.987-00");
-        PurchasesItemDTO item1 = createMockPurchasesItem(270, LocalDate.of(2024, 3, 15), 2, 3);
-        PurchasesItemDTO item2 = createMockPurchasesItem(750, LocalDate.of(2024, 1, 5), 5, 5);
-
-        return new PurchaseDTO(customer, List.of(item1, item2), BigDecimal.valueOf(1020));
+        return PurchaseDTO.builder()
+                .customer(customer)
+                .purchasesProducts(products)
+                .purchasesTotalValue(totalValue)
+                .build();
     }
 
-    private PurchasesItemDTO createMockPurchasesItem(double totalValue, LocalDate date, long productId, int quantity) {
-        ProductDTO product =  ProductDTO.builder().id(productId).quantity(quantity).build();
-        return new PurchasesItemDTO(BigDecimal.valueOf(totalValue), date, List.of(product));
+    private PurchasesProductDTO createPurchasesProductDTO(Long productId, int quantity, double totalValue) {
+        return PurchasesProductDTO.builder()
+                .id(productId)
+                .quantity(quantity)
+                .totalValue(BigDecimal.valueOf(totalValue))
+                .build();
     }
 }

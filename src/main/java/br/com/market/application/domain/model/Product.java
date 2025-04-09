@@ -6,23 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Product implements Serializable {
-    @JsonProperty("id")
+@NoArgsConstructor
+@Builder
+@Data
+public class Product {
+    @JsonProperty("codigo")
     private Long id;
 
-    @JsonProperty("nome")
-    private String name;
-
-    @JsonProperty("categoria")
-    private String category;
+    @JsonProperty("tipo_vinho")
+    private String wineType;
 
     @JsonProperty("preco")
     private BigDecimal price;
+
+    @JsonProperty("safra")
+    private String harvest;
+
+    @JsonProperty("ano_compra")
+    private int purchaseYear;
 }
