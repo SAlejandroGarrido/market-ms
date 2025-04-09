@@ -13,7 +13,11 @@
 - 🐳 **Docker**: Containerização da aplicação para facilitar o deploy e a escalabilidade.
 - ✅ **JaCoCo**: Ferramenta para análise de cobertura de código.
 - 📜 **Swagger**: Documentação interativa para APIs REST.
-
+- 🔄 **ModelMapper**: Mapeamento de objetos.
+- 📜 **Swagger/OpenAPI**: Documentação interativa para APIs REST.
+- 🧪 **JUnit 5**: Framework para criação de testes unitários.
+- 🛠️ **Mockito**: Framework para criação de mocks em testes.
+- 
 ## 🏗️ Arquitetura
 
 A aplicação segue os princípios da **Arquitetura Hexagonal** (🔌 **Ports and Adapters**).
