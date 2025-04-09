@@ -1,10 +1,11 @@
 server:
   port: 8089
-  servlet:
-    context-path: /v1/api/market
 
 api:
   version: v1
+
+base:
+  path: ${api.version}/api/market
 
 spring:
   cloud:
@@ -19,8 +20,6 @@ logging:
       Request: DEBUG
       Response: DEBUG
     br.com.market: DEBUG
-    br.com.market.adapter.out.web.feing: DEBUG
-    org.springframework.cloud.openfeign: DEBUG
 
 feign:
   client:
@@ -34,5 +33,19 @@ feign:
 
 clients:
   paths:
-    products: http://run.mocky.io/v3/f4c5e48f-771a-4cd6-bc6a-b1641ebe9c91
-    purchases: http://run.mocky.io/v3/1ecc78a0-9495-4e07-b4f4-14a6ae576858
+    products: https://rgr3viiqdl8sikgv.public.blob.vercel-storage.com/produtos-mnboX5IPl6VgG390FECTKqHsD9SkLS.json
+    purchases: https://rgr3viiqdl8sikgv.public.blob.vercel-storage.com/clientes-Vz1U6aR3GTsjb3W8BRJhcNKmA81pVh.json
+
+management:
+  server:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: spring-market

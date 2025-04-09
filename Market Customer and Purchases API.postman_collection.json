@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "dd205c8c-ce1d-4438-be07-3a5db82c359d",
+		"name": "Market Customer and Purchases API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10838537"
+	},
+	"item": [
+		{
+			"name": "Get Purchases - Ordered by Value",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"pm.test(\"Response has purchases ordered by value\", function () {",
+							"    let jsonData = pm.response.json();",
+							"    let values = jsonData.map(purchase => purchase.purchasesItems.reduce((acc, item) => acc + item.totalValue, 0));",
+							"    let sortedValues = [...values].sort((a, b) => a - b);",
+							"    pm.expect(values).to.eql(sortedValues);",
+							"});",
+							"pm.test(\"Response contains at least one purchase\", function () {",
+							"    let jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.be.above(0);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8089/v1/api/market/purchases",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8089",
+					"path": [
+						"v1",
+						"api",
+						"market",
+						"purchases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Largest Purchase of the Year",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Response status is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Total purchase value is correct\", function () {",
+							"    pm.expect(jsonData.totalValuePurchases).to.eql(1020);",
+							"});",
+							"pm.test(\"Customer name is correct\", function () {",
+							"    pm.expect(jsonData.customer.name).to.eql(\"Carlos Souza\");",
+							"});",
+							"pm.test(\"Purchases contain expected items\", function () {",
+							"    pm.expect(jsonData.purchasesItems.length).to.be.above(0);",
+							"    pm.expect(jsonData.purchasesItems[0].totalValue).to.be.oneOf([270, 750]);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8089/v1/api/market/purchases/2018",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8089",
+					"path": [
+						"v1",
+						"api",
+						"market",
+						"purchases",
+						"2018"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Loyal Clients",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8089/v1/api/market/customers/loyal",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8089",
+					"path": [
+						"v1",
+						"api",
+						"market",
+						"customers",
+						"loyal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Recommendation By Type",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8089/v1/api/market/customers/recommendation/type",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8089",
+					"path": [
+						"v1",
+						"api",
+						"market",
+						"customers",
+						"recommendation",
+						"type"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
