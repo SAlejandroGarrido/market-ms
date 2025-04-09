@@ -92,3 +92,4 @@ Base Path: `/v1/api/market/purchases`
 1. Execute os testes com o comando:
    ```bash
    mvn clean verify
+2. Collection Postman no projeto com testes funcionais   
